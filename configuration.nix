@@ -1,11 +1,14 @@
 { config, lib, pkgs, ... }:
 
+# { nixpkgs.config.allowUnfree = true; }
+
 {
   imports =
     [ 
       ./hardware-configuration.nix
     ];
 
+  nixpkgs.config.allowUnfree = true;
   
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -30,11 +33,12 @@
  	
  
   networking.networkmanager.enable = true;
-
+  networking.firewall.enable = true;
   
   time.timeZone = "Europe/Amsterdam";
 
   programs.zsh.enable = true;
+
 
   users.defaultUserShell = pkgs.zsh;
 
@@ -50,11 +54,18 @@
   	isNormalUser = true;
      	extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
      	packages = with pkgs; [
+	
 		tree
 	];
+  	shell = pkgs.zsh;
+
   };
 
-  programs.firefox.enable = true;
+
+
+
+   programs.firefox.enable = true;
+
 
   
   environment.systemPackages = with pkgs; [
@@ -76,6 +87,12 @@
 	solaar
 	links2
 	ungoogled-chromium
+	localsend
+	joplin-desktop
+	hyprlock
+	hypridle
+	btop
+	vivaldi
   ];
 
   fonts.packages = with pkgs; [
