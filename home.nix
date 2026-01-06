@@ -50,11 +50,11 @@
   # This block converts all your 'alias' lines into declarative attributes
   		shellAliases = {
     			# NixOS Rebuild/Config Edits
-    			nr = "sudo nixos-rebuild switch --flake \"/etc/nixos#nixos-btw\""; # Note: Escaping quotes with \" is best practice here
-    			nru = "sudo nixos-rebuild switch --flake \"/etc/nixos#nixos-btw\" --upgrade";
-			home = "sudo nvim /etc/nixos/home.nix";
-    			edit = "sudo nvim /etc/nixos/configuration.nix";
-    			flake = "sudo nvim /etc/nixos/flake.nix";
+    			nr = "sudo nixos-rebuild switch --flake \"~/git/nix#nixos-btw\""; # Note: Escaping quotes with \" is best practice here
+    			nru = "sudo nixos-rebuild switch --flake \"~/git/nix#nixos-btw\" --upgrade";
+			home = "sudo nvim ~/git/nix/home.nix";
+    			edit = "sudo nvim ~/git/nixos/configuration.nix";
+    			flake = "sudo nvim ~/git/nixos/flake.nix";
     
     			# General System Commands
     			con = "cd ~/.config";
