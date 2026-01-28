@@ -1,12 +1,32 @@
-{ config, lib, pkgs, ... }:
+{ config, pkgs, lib, inputs, ... }:
+
+
 
 # { nixpkgs.config.allowUnfree = true; }
+let
+  # This creates a "modified" version of the theme with your wallpaper
+  custom-astronaut = pkgs.sddm-astronaut.override {
+    themeConfig = {
+      Background = "/home/daniel/git/clean-dotfiles/wallpapers/wallpaper02.jpg";
+    };
+  };
 
-{
+
+
   imports =
     [ 
       ./hardware-configuration.nix
     ];
+
+
+# --- Home Manager Configuration Start ---
+  home-manager.useGlobalPkgs = true;
+  home-manager.useUserPackages = true;
+  home-manager.users.daniel = { pkgs, ... }: {
+    
+    home.stateVersion = "25.11"; # Use the version you initially installed
+  };
+  # --- Home Manager Configuration End ---
 
   nixpkgs.config.allowUnfree = true;
   
@@ -35,14 +55,16 @@ nix.gc = {
 
   networking = {
   	hostName = "nixos"; 
-	useDHCP = false;
-	interfaces.enp0s31f6.ipv4.addresses = [ {
-		address = "192.168.1.50";
-		prefixLength = 24;
-	} ];
+	networkmanager.enable = true;
+	networkmanager.wifi.backend = "iwd";
+	useDHCP = lib.mkDefault true;
+#	interfaces.enp0s31f6.ipv4.addresses = [ {
+#		address = "192.168.1.50";
+#		prefixLength = 24;
 
-	defaultGateway = "192.168.1.1";
-	nameservers = [ "1.1.1.1" "8.8.8.8" ];
+
+#	defaultGateway = "192.168.1.1";
+#	nameservers = [ "1.1.1.1" "8.8.8.8" ];
   };
 
 
@@ -105,12 +127,53 @@ nix.gc = {
 	};
   };
 
+#  services.desktopManager.plasma6.enable = false;
+
+  services.displayManager.sddm = {
+  	enable = true;
+  	wayland.enable = true;
+  # Setting theme to "" or a non-existent name often forces 
+  # SDDM to fall back to its own built-in, basic 'sugar' or 'maldives' style
+  	theme = "${custom-astronaut}/share/sddm/themes/sddm-astronaut-theme";
+	package = pkgs.kdePackages.sddm;
+	extraPackages = [
+		custom-astronaut
+		pkgs.kdePackages.qt5compat
+	]; 
+};
+
+# Force Hyprland to be the absolute default
+  services.displayManager.defaultSession = "hyprland"; 
+
+  services.displayManager.sddm.settings = {
+	Theme = {
+      # Path to your wallpaper - Ensure this is a world-readable path
+      # (e.g., /boot/wallpaper.jpg or a file with chmod 644)
+	Background = "/home/daniel/wallpapers/wallpaper01.jpg";
+   };
+};
+
+
+  # This helps non-KDE apps look like they belong in a modern desktop
+  qt = {
+    enable = true;
+    platformTheme = "qt5ct";
+    style = "breeze";
+  };
+
 #  services.getty.autologinUser = "daniel";
+#  services.displayManager.sddm = {
+#  enable = true;
+#  wayland.enable = true;
+  # This stops it from loading the full KDE "Breeze" look
+#  theme = "chili"; # A standard clean dark theme
+#};
  
 #  services.displayManager.sddm.enable = true;
 #  services.displayManager.sddm.wayland.enable = true;
 #  services.displayManager.defaultSession = "hyprland";
-#  services.greetd.enable = true;
+#  programs.hyprland.enable = true; 
+# services.greetd.enable = true;
  	
  
 #  networking.networkmanager.enable = true;
@@ -118,7 +181,14 @@ nix.gc = {
   
   time.timeZone = "Europe/Amsterdam";
 
-  programs.zsh.enable = true;
+ i18n.defaultLocale = "sv_SE.UTF-8";
+ console.keyMap = "sv-latin1";
+ services.xserver.xkb = {
+	layout ="se";
+	variant = "";
+ }; 
+
+ programs.zsh.enable = true;
 
 
   users.defaultUserShell = pkgs.zsh;
@@ -145,9 +215,22 @@ nix.gc = {
 
 
 
-   programs.firefox.enable = true;
+  programs.firefox.enable = true;
 
-
+  environment.sessionVariables = {
+  # Forces Electron apps (like Joplin) to use Wayland natively
+  	NIXOS_OZONE_WL = "1";
+  
+  # Ensures apps know to look for a Dark theme
+  	GTK_THEME = "Tokyo-Night-Dark"; 
+  	XDG_CURRENT_DESKTOP = "Hyprland";
+  	XDG_SESSION_TYPE = "wayland";
+  	XDG_SESSION_DESKTOP = "Hyprland";
+  
+  # Fixes cursor and scaling issues in some legacy toolkits
+  	GDK_BACKEND = "wayland,x11,*";
+  	QT_QPA_PLATFORM = "wayland;xcb";
+  };
   
   environment.systemPackages = with pkgs; [
 	vim 
@@ -178,6 +261,24 @@ nix.gc = {
 	python3
 	rsync
 	openssl
+	signal-desktop
+	sddm-chili-theme
+	sddm-astronaut
+	custom-astronaut
+    	kdePackages.qtmultimedia # Required for many modern SDDM themes
+    	kdePackages.qtsvg
+	# Use this specific attribute for the modern version:
+        kdePackages.dolphin
+        # These helpers ensure it actually opens in Wayland:
+        kdePackages.qtwayland
+        kdePackages.qtsvg 
+	libsForQt5.qt5.qtgraphicaleffects
+    	libsForQt5.qt5.qtsvg
+    	libsForQt5.qt5.qtquickcontrols2
+	vscode-fhs
+	warp-terminal
+	swww
+	wlogout
 	(python3.withPackages (ps: with ps; [
 		flask
 	]))
@@ -185,6 +286,11 @@ nix.gc = {
   ];
 
   fonts.packages = with pkgs; [
+	noto-fonts
+  	noto-fonts-cjk-sans
+  	noto-fonts-color-emoji
+  	liberation_ttf
+  	jetbrains-mono
 	nerd-fonts.jetbrains-mono
   ];
 
