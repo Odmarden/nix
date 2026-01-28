@@ -1,8 +1,5 @@
 { config, pkgs, lib, inputs, ... }:
 
-
-
-# { nixpkgs.config.allowUnfree = true; }
 let
   # This creates a "modified" version of the theme with your wallpaper
   custom-astronaut = pkgs.sddm-astronaut.override {
@@ -10,23 +7,20 @@ let
       Background = "/home/daniel/git/clean-dotfiles/wallpapers/wallpaper02.jpg";
     };
   };
+in
 
-
-
+{
   imports =
     [ 
       ./hardware-configuration.nix
     ];
 
-
-# --- Home Manager Configuration Start ---
+  # Home Manager Configuration
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = true;
   home-manager.users.daniel = { pkgs, ... }: {
-    
-    home.stateVersion = "25.11"; # Use the version you initially installed
+    home.stateVersion = "25.11";
   };
-  # --- Home Manager Configuration End ---
 
   nixpkgs.config.allowUnfree = true;
   
@@ -216,6 +210,22 @@ nix.gc = {
 
 
   programs.firefox.enable = true;
+
+  # 1Password Configuration
+  programs._1password.enable = true;
+  programs._1password-gui = {
+    enable = true;
+    polkitPolicyOwners = [ "daniel" ];
+  };
+
+  environment.etc = {
+    "1password/custom_allowed_browsers" = {
+      text = ''
+        vivaldi-bin
+      '';
+      mode = "0755";
+    };
+  };
 
   environment.sessionVariables = {
   # Forces Electron apps (like Joplin) to use Wayland natively
