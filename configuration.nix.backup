@@ -12,7 +12,7 @@ in
 {
   imports =
     [ 
-      /etc/nixos/hardware-configuration.nix
+      ./hardware-configuration.nix
     ];
 
   # Home Manager Configuration
@@ -28,15 +28,15 @@ in
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
- boot.kernelParams = [ "i915.modeset=1" ];
- boot.initrd.kernelModules = [ "i915" ];
+ # boot.kernelParams = [ "i915.modeset=1" ];
+ # boot.initrd.kernelModules = [ "i915" ];
 
- hardware.graphics.enable = true;  
- hardware.graphics.extraPackages = with pkgs; [
-	intel-media-driver
-	intel-vaapi-driver
-	libvdpau-va-gl
-  ];
+ # hardware.graphics.enable = true;  
+ # hardware.graphics.extraPackages = with pkgs; [
+#	intel-media-driver
+#	intel-vaapi-driver
+#	libvdpau-va-gl
+ # ];
 
 nix.gc = {
     automatic = true;
@@ -238,11 +238,6 @@ nix.gc = {
   	XDG_SESSION_DESKTOP = "Hyprland";
   
   # Fixes cursor and scaling issues in some legacy toolkits
-  
-  # Graphics performance optimizations
-  	MESA_LOADER_DRIVER_OVERRIDE = "iris";
-  	VDPAU_DRIVER = "va_gl";
-  	LIBVA_DRIVER_NAME = "iHD";
   	GDK_BACKEND = "wayland,x11,*";
   	QT_QPA_PLATFORM = "wayland;xcb";
   };
@@ -261,7 +256,7 @@ nix.gc = {
 	starship
 	quickshell
 	wl-clipboard
-	fastfetch
+	neofetch
 	yazi
 	solaar
 	links2
@@ -292,8 +287,6 @@ nix.gc = {
     	libsForQt5.qt5.qtquickcontrols2
 	vscode-fhs
 	warp-terminal
-	wordgrinder
-	cryptpad
 	swww
 	wlogout
 	(python3.withPackages (ps: with ps; [

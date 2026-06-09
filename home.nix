@@ -4,7 +4,78 @@
 	home.username = "daniel";
 	home.homeDirectory = "/home/daniel";
 	home.stateVersion = "25.11";
+	
+	programs.wofi = {
+  		enable = true;
+  		settings = {
+    			width = 400;
+    			height = 300;
+    			location = "center";
+    			show = "drun";
+    			prompt = "Search Apps...";
+    			filter_rate = 100;
+    			allow_markup = true;
+    			no_actions = true;
+    			halign = "fill";
+    			orientation = "vertical";
+    			content_halign = "fill";
+    			insensitivy = true;
+    			allow_images = true;
+    			image_size = 28;
+  		};
+  		style = ''
+    			window {
+      				margin: 0px;
+      				border: 2px solid #bb9af7;
+      				background-color: #1a1b26;
+      				border-radius: 12px;
+      				font-family: "JetBrains Mono Nerd Font";
+      				font-size: 14px;
+    			}
 
+    			#input {
+      				margin: 5px;
+      				border: none;
+      				color: #c0caf5;
+      				background-color: #24283b;
+      				border-radius: 8px;
+    			}
+
+    			#inner-box {
+      				margin: 5px;
+      				border: none;
+      				background-color: transparent;
+    			}
+
+    			#outer-box {
+      				margin: 5px;
+      				border: none;
+      				background-color: transparent;
+    			}
+
+    			#scroll {
+      				margin: 0px;
+      				border: none;
+    			}
+
+    			#text {
+      				margin: 5px;
+      				border: none;
+      				color: #c0caf5;
+    			}
+
+    			#entry:selected {
+      				background-color: #414868;
+      				border-radius: 8px;
+      				outline: none;
+    			}
+
+    			#text:selected {
+      				color: #7aa2f7;
+    			}
+  		'';
+	};
+	
 	programs.git = {
 		enable = true;
 
@@ -45,28 +116,30 @@
     			autoload -Uz compinit
     			compinit
   		'';
-
+		
 		# --- ALIASES ---
   # This block converts all your 'alias' lines into declarative attributes
   		shellAliases = {
     			# NixOS Rebuild/Config Edits
     			nr = "sudo nixos-rebuild switch --flake \"/etc/nixos#nixos-btw\""; # Note: Escaping quotes with \" is best practice here
     			nru = "sudo nixos-rebuild switch --flake \"/etc/nixos#nixos-btw\" --upgrade";
-			home = "sudo nvim /etc/nixos/home.nix";
-    			edit = "sudo nvim /etc/nixos/configuration.nix";
-    			flake = "sudo nvim /etc/nixos/flake.nix";
+			hr = "home-manager switch --flake /etc/nixos#nixos-btw";
+
+			home = "nvim /home/daniel/git/nix/home.nix";
+    			edit = "nvim /home/daniel/git/nix/configuration.nix";
+    			flake = "nvim /home/daniel/git/nix/flake.nix";
     
     			# General System Commands
     			con = "cd ~/.config
 			ls";
     			r = "reboot";
     			c = "clear";
-    
+
     			# Hyprland/WM Edits
     			h = "hyprland";
-    			hypr = "cd ~/.config/hypr";
-    			hedit = "sudo nvim ~/.config/hypr/hyprland.conf";
-    			kedit = "sudo nvim ~/.config/kitty/kitty.conf";
+    			hypr = "cd /home/daniel/git/clean-dotfiles/hypr";
+    			hedit = "nvim /home/daniel/git/clean-dotfiles/hypr/hyprland.conf";
+    			kedit = "nvim /home/daniel/git/clean-dotfiles/kitty/kitty.conf";
     
     			# Hyprpaper Wallpaper Commands
     			wp1 = "hyprctl hyprpaper wallpaper \"DP-1,~/wallpapers/wallpaper01.jpg\"";
