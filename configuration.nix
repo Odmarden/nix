@@ -163,7 +163,7 @@ nix.gc = {
 	starship
 	quickshell
 	wl-clipboard
-	neofetch
+	fastfetch
 	yazi
 	solaar
 	links2
