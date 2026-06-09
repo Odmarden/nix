@@ -57,7 +57,8 @@
     			flake = "sudo nvim /etc/nixos/flake.nix";
     
     			# General System Commands
-    			con = "cd ~/.config";
+    			con = "cd ~/.config
+			ls";
     			r = "reboot";
     			c = "clear";
     
@@ -73,7 +74,9 @@
     			wp3 = "hyprctl hyprpaper wallpaper \"DP-1,~/wallpapers/wallpaper03.jpg\"";
     			wp4 = "hyprctl hyprpaper wallpaper \"DP-1,~/wallpapers/wallpaper04.jpg\"";
     			wp5 = "hyprctl hyprpaper wallpaper \"DP-1,~/wallpapers/wallpaper05.jpg\"";
-    		
+    		        
+                        # database shortcut
+			update-books = "python3 /var/www/bokdatabas/books_db.py";	
 		};
 	
 
